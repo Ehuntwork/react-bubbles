@@ -21,7 +21,6 @@ const Login = () => {
       ...state.credentials,
       [e.target.name]: e.target.value
       }
-      
   });
   };
 

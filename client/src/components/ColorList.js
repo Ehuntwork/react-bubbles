@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {axiosWithAuth} from '../utils/axiosWithAuth'
 
 const initialColor = {
@@ -8,10 +7,9 @@ const initialColor = {
 };
 
 const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+  //console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
-
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
@@ -43,6 +41,28 @@ const ColorList = ({ colors, updateColors }) => {
       })
       .catch(err => console.log(err));
   };
+
+  //////////////////////////STRETCH//////////////////////////
+  
+  const [newColor, setNewColor] = useState(initialColor)
+  
+  const handleChange = e => {
+    const{name, value} = e.target;
+      setNewColor({
+          ...newColor,
+          [name]: value,
+        })
+  };
+
+  const onSubmit = e =>{
+    e.preventDefault()
+    axiosWithAuth()
+      .post('/api/colors', newColor)
+      .then(()=>{updateColors()})
+      .catch(err => console.log(err));
+    setNewColor(initialColor)
+
+}
       
   return (
     <div className="colors-wrap">
@@ -99,6 +119,30 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+      <div className='newForm'>
+        <form onSubmit={onSubmit}>
+          <legend>ADD NEW COLOR</legend>
+          <label>
+            color:
+            <input
+            type="text"
+            name="color"
+            value={newColor.color}
+            onChange={handleChange}
+            />
+          </label>
+          <label>
+            hex code:
+            <input
+            type="text"
+            name="code"
+            value={newColor.code.hex}
+            onChange={handleChange}
+            />
+          </label>
+          <button>Submit</button>
+        </form>
+      </div>
     </div>
   );
 };
